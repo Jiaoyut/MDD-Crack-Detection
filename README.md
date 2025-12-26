@@ -24,7 +24,7 @@ MDD-Crack-Detection/
 │       ├── train/          # Training set (images/ & labels/)
 │       ├── valid/          # Validation set
 │       └── test/           # Test set
-├── models/                 # Source code for YOLO11 and MDD modules
+├── models/                 # MDD modules
 ├── predictOut/             # Output directory for inference results (visualizations)
 ├── runs/                   # Directory storing training logs and checkpoints
 │   ├── segment/            # Segmentation training logs
@@ -32,6 +32,6 @@ MDD-Crack-Detection/
 ├── testdata/               # Sample images used for quick testing/inference
 ├── utils/                  # Utility scripts and helper functions
 ├── weights/                # Pre-trained model weights
-│   └── MDD/
-│       └── weights/        # Contains the best trained MDD model
-└── requirements.txt        # Python dependencies
+   └── MDD/
+      └── weights/        # Contains the best trained MDD model
+
