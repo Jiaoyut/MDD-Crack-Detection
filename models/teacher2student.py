@@ -47,7 +47,7 @@ class CorrectEbbinghausDistillation:
         self.setup_correct_models()
         self.setup_correct_callbacks()
 
-        logging.info("🧠✅ 正确的艾宾浩斯蒸馏系统初始化完成")
+        logging.info(" 正确的艾宾浩斯蒸馏系统初始化完成")
 
     def setup_correct_models(self):
         """设置正确模型"""
@@ -65,9 +65,9 @@ class CorrectEbbinghausDistillation:
             # 添加梯度裁剪
             self._add_correct_gradient_clipping()
 
-            logging.info("✅ 正确模型设置完成")
+            logging.info(" 正确模型设置完成")
         except Exception as e:
-            logging.error(f"❌ 模型设置失败: {e}")
+            logging.error(f" 模型设置失败: {e}")
             raise
 
     def _add_correct_gradient_clipping(self):
@@ -84,16 +84,16 @@ class CorrectEbbinghausDistillation:
                                 clipped_norm = clipped_grad.norm().item() if clipped_grad is not None else 0
                                 if grad_norm > 1.0:
                                     logging.info(
-                                        f"✂️ 梯度裁剪: {param_name} 梯度范数 {grad_norm:.3f} -> {clipped_norm:.3f}")
+                                        f" 梯度裁剪: {param_name} 梯度范数 {grad_norm:.3f} -> {clipped_norm:.3f}")
                             return clipped_grad
 
                         return hook
 
                     param.register_hook(make_hook(name))
 
-            logging.info("✅ 梯度裁剪钩子已添加")
+            logging.info(" 梯度裁剪钩子已添加")
         except Exception as e:
-            logging.warning(f"❌ 梯度裁剪设置失败: {e}")
+            logging.warning(f" 梯度裁剪设置失败: {e}")
 
     def setup_correct_callbacks(self):
         """设置正确回调"""
@@ -107,11 +107,11 @@ class CorrectEbbinghausDistillation:
 
         # 替换训练方法
         self.student.train = correct_train_wrapper
-        logging.info("✅ 正确回调设置完成")
+        logging.info(" 正确回调设置完成")
 
     def _correct_training(self, **kwargs):
         """正确训练"""
-        logging.info("🚀 开始正确的艾宾浩斯蒸馏训练...")
+        logging.info(" 开始正确的艾宾浩斯蒸馏训练...")
 
         # 设置正确回调
         self._setup_correct_training_callbacks()
@@ -172,7 +172,7 @@ class CorrectEbbinghausDistillation:
                     if self.nan_recovery_steps >= 100:
                         self.nan_detected = False
                         self.nan_recovery_steps = 0
-                        logging.info("🔄 已从NaN状态恢复")
+                        logging.info(" 已从NaN状态恢复")
 
                 # 提取批次数据
                 batch = self._get_correct_batch_data(trainer)
@@ -182,15 +182,15 @@ class CorrectEbbinghausDistillation:
                     if self.step_count % 200 == 0:
                         imgs = batch.get('img') if hasattr(batch, 'get') else None
                         if imgs is not None and hasattr(imgs, 'shape'):
-                            logging.info(f"✅ 步骤{self.step_count}: 获取真实批次数据, 形状: {imgs.shape}")
+                            logging.info(f" 步骤{self.step_count}: 获取真实批次数据, 形状: {imgs.shape}")
                 else:
                     if self.step_count % 200 == 0:
-                        logging.info(f"🔄 步骤{self.step_count}: 使用正确虚拟数据")
+                        logging.info(f" 步骤{self.step_count}: 使用正确虚拟数据")
                     self.current_batch = self._create_correct_virtual_batch()
 
             except Exception as e:
                 if self.step_count % 200 == 0:
-                    logging.warning(f"❌ 步骤{self.step_count}批次开始回调失败: {e}")
+                    logging.warning(f" 步骤{self.step_count}批次开始回调失败: {e}")
 
         def on_train_batch_end(trainer):
             """正确批次结束回调"""
@@ -204,7 +204,7 @@ class CorrectEbbinghausDistillation:
                             loss_value = float(trainer.loss)
                         if math.isnan(loss_value) or math.isinf(loss_value):
                             if not self.nan_detected:
-                                logging.warning("⚠️ 检测到NaN损失，启用正确模式")
+                                logging.warning("检测到NaN损失，启用正确模式")
                                 self.nan_detected = True
                                 self.stable_mode = True
                             return  # 跳过蒸馏
@@ -214,7 +214,7 @@ class CorrectEbbinghausDistillation:
                 self._apply_correct_distillation(trainer)
             except Exception as e:
                 if self.step_count % 200 == 0:
-                    logging.warning(f"❌ 步骤{self.step_count}蒸馏失败: {e}")
+                    logging.warning(f" 步骤{self.step_count}蒸馏失败: {e}")
 
         def on_train_epoch_end(trainer):
             self.epoch_count += 1
@@ -233,7 +233,7 @@ class CorrectEbbinghausDistillation:
         self.student.callbacks['on_train_batch_end'].append(on_train_batch_end)
         self.student.callbacks['on_train_epoch_end'].append(on_train_epoch_end)
 
-        logging.info("✅ 正确训练回调设置完成")
+        logging.info(" 正确训练回调设置完成")
 
     def _get_correct_batch_data(self, trainer):
         """获取正确批次数据"""
@@ -273,12 +273,12 @@ class CorrectEbbinghausDistillation:
         """应用正确蒸馏"""
         if not hasattr(self, 'current_batch') or self.current_batch is None:
             if self.step_count % 200 == 0:
-                logging.info(f"🔄 步骤{self.step_count}: 无批次数据，跳过蒸馏")
+                logging.info(f" 步骤{self.step_count}: 无批次数据，跳过蒸馏")
             return
 
         if self.nan_detected and self.stable_mode:
             if self.step_count % 100 == 0:
-                logging.info(f"🔄 步骤{self.step_count}: NaN恢复模式，跳过蒸馏")
+                logging.info(f" 步骤{self.step_count}: NaN恢复模式，跳过蒸馏")
             return
 
         batch = self.current_batch
@@ -287,7 +287,7 @@ class CorrectEbbinghausDistillation:
             # 验证批次数据
             if not self._validate_correct_batch(batch):
                 if self.step_count % 200 == 0:
-                    logging.info(f"🔄 步骤{self.step_count}: 批次数据无效，使用正确虚拟数据")
+                    logging.info(f" 步骤{self.step_count}: 批次数据无效，使用正确虚拟数据")
                 batch = self._create_correct_virtual_batch()
                 if batch is None:
                     return
@@ -296,11 +296,11 @@ class CorrectEbbinghausDistillation:
             imgs = batch.get('img') if hasattr(batch, 'get') else None
             if imgs is None:
                 if self.step_count % 200 == 0:
-                    logging.info(f"🔄 步骤{self.step_count}: 无图像数据，使用正确虚拟图像")
+                    logging.info(f" 步骤{self.step_count}: 无图像数据，使用正确虚拟图像")
                 imgs = torch.randn(8, 3, 640, 640, device=self.device) * 0.1 + 0.5
 
             if self.step_count % 200 == 0:
-                logging.info(f"🧠 步骤{self.step_count}: 应用正确蒸馏, 图像形状: {imgs.shape}")
+                logging.info(f" 步骤{self.step_count}: 应用正确蒸馏, 图像形状: {imgs.shape}")
 
             # 记录原始损失
             original_loss = 0.0
@@ -318,7 +318,7 @@ class CorrectEbbinghausDistillation:
 
             # 检查图像数据稳定性
             if torch.isnan(imgs).any() or torch.isinf(imgs).any():
-                logging.warning("⚠️ 图像数据包含NaN或Inf，使用正确虚拟数据")
+                logging.warning(" 图像数据包含NaN或Inf，使用正确虚拟数据")
                 imgs = torch.randn(8, 3, 640, 640, device=self.device) * 0.1 + 0.5
 
             if imgs.max() > 1.0:
@@ -329,14 +329,14 @@ class CorrectEbbinghausDistillation:
                 try:
                     teacher_outputs = self.teacher.model(imgs)
                 except Exception as e:
-                    logging.warning(f"❌ 教师预测失败: {e}")
+                    logging.warning(f" 教师预测失败: {e}")
                     return
 
             # 学生预测
             try:
                 student_outputs = self.student.model(imgs)
             except Exception as e:
-                logging.warning(f"❌ 学生预测失败: {e}")
+                logging.warning(f" 学生预测失败: {e}")
                 return
 
             # 计算正确蒸馏损失
@@ -344,7 +344,7 @@ class CorrectEbbinghausDistillation:
 
             # 检查蒸馏损失稳定性
             if not self._check_tensor_stability(distill_loss, '蒸馏损失'):
-                logging.warning("⚠️ 蒸馏损失不稳定，使用默认值")
+                logging.warning(" 蒸馏损失不稳定，使用默认值")
                 distill_loss = torch.tensor(0.05, device=self.device, requires_grad=True)
 
             # 应用蒸馏损失
@@ -354,7 +354,7 @@ class CorrectEbbinghausDistillation:
             if hasattr(trainer, 'loss') and trainer.loss is not None:
                 # 检查当前损失稳定性
                 if not self._check_loss_stability(trainer.loss):
-                    logging.warning("⚠️ 训练损失不稳定，重置为蒸馏损失")
+                    logging.warning(" 训练损失不稳定，重置为蒸馏损失")
                     trainer.loss = weighted_distill
                 else:
                     trainer.loss = trainer.loss + weighted_distill
@@ -390,21 +390,21 @@ class CorrectEbbinghausDistillation:
 
                 memory_report = self.memory_model.get_memory_report()
 
-                logging.info("🧠 === 正确蒸馏报告 ===")
-                logging.info(f"📊 训练步数: {self.step_count}")
-                logging.info(f"💧 损失变化: {original_loss:.4f} -> {new_loss:.4f}")
-                logging.info(f"🔥 蒸馏损失: {distill_loss_value:.6f}")
-                logging.info(f"🎯 学习进度: {memory_report['learning_progress']:.1%}")
-                logging.info(f"📚 跟踪样本: {memory_report['total_samples']}个")
-                logging.info(f"💾 平均记忆强度: {memory_report['avg_intensity']:.3f}")
-                logging.info(f"📈 记忆趋势: {memory_report['trend']}")
-                logging.info(f"✅ 蒸馏应用次数: {self.distill_applied}")
+                logging.info(" === 正确蒸馏报告 ===")
+                logging.info(f"训练步数: {self.step_count}")
+                logging.info(f" 损失变化: {original_loss:.4f} -> {new_loss:.4f}")
+                logging.info(f" 蒸馏损失: {distill_loss_value:.6f}")
+                logging.info(f" 学习进度: {memory_report['learning_progress']:.1%}")
+                logging.info(f" 跟踪样本: {memory_report['total_samples']}个")
+                logging.info(f" 平均记忆强度: {memory_report['avg_intensity']:.3f}")
+                logging.info(f" 记忆趋势: {memory_report['trend']}")
+                logging.info(f" 蒸馏应用次数: {self.distill_applied}")
                 if self.stable_mode:
-                    logging.info("🛡️ 稳定模式: 已启用")
+                    logging.info(" 稳定模式: 已启用")
 
         except Exception as e:
             if self.step_count % 200 == 0:
-                logging.warning(f"❌ 步骤{self.step_count}蒸馏失败: {e}")
+                logging.warning(f" 步骤{self.step_count}蒸馏失败: {e}")
 
     def _compute_correct_distillation_loss(self, student_out, teacher_out, imgs):
         """计算正确蒸馏损失"""
@@ -419,7 +419,7 @@ class CorrectEbbinghausDistillation:
 
             if not s_features or not t_features:
                 if self.step_count % 500 == 0:
-                    logging.info("🔄 无法提取特征，使用正确默认损失")
+                    logging.info(" 无法提取特征，使用正确默认损失")
                 return torch.tensor(0.05, device=self.device, requires_grad=True)
 
             # 对每个特征层计算损失
@@ -441,7 +441,7 @@ class CorrectEbbinghausDistillation:
                         s_feat = F.interpolate(s_feat, size=t_feat.shape[2:], mode='bilinear', align_corners=False)
                     except Exception as e:
                         if self.step_count % 500 == 0:
-                            logging.warning(f"❌ 特征{i}插值失败: {e}")
+                            logging.warning(f" 特征{i}插值失败: {e}")
                         continue
 
                 # 计算MSE损失
@@ -457,21 +457,21 @@ class CorrectEbbinghausDistillation:
 
                 except Exception as e:
                     if self.step_count % 500 == 0:
-                        logging.warning(f"❌ 特征{i}损失计算失败: {e}")
+                        logging.warning(f" 特征{i}损失计算失败: {e}")
                     continue
 
             if num_losses > 0:
                 avg_loss = total_loss / num_losses
                 if self.step_count % 500 == 0:
-                    logging.info(f"🎯 正确特征蒸馏损失: {avg_loss.item():.6f} (基于{num_losses}个特征层)")
+                    logging.info(f" 正确特征蒸馏损失: {avg_loss.item():.6f} (基于{num_losses}个特征层)")
                 return avg_loss
             else:
                 if self.step_count % 500 == 0:
-                    logging.info("🔄 所有特征层损失计算失败，使用正确默认损失")
+                    logging.info(" 所有特征层损失计算失败，使用正确默认损失")
                 return torch.tensor(0.05, device=self.device, requires_grad=True)
 
         except Exception as e:
-            logging.warning(f"❌ 正确蒸馏损失计算失败: {e}")
+            logging.warning(f" 正确蒸馏损失计算失败: {e}")
             return torch.tensor(0.05, device=self.device, requires_grad=True)
 
     def _extract_correct_features(self, model_output, model_type):
@@ -513,13 +513,13 @@ class CorrectEbbinghausDistillation:
                     stable_features.append(stable_feat)
 
             if self.step_count % 1000 == 0 and stable_features:
-                logging.info(f"🔍 {model_type}特征提取: 找到{len(stable_features)}个稳定特征")
+                logging.info(f" {model_type}特征提取: 找到{len(stable_features)}个稳定特征")
 
             return stable_features
 
         except Exception as e:
             if self.step_count % 500 == 0:
-                logging.warning(f"❌ {model_type}特征提取失败: {e}")
+                logging.warning(f" {model_type}特征提取失败: {e}")
             return []
 
     def _stabilize_tensor(self, tensor):
@@ -545,7 +545,7 @@ class CorrectEbbinghausDistillation:
 
         except Exception as e:
             if self.step_count % 500 == 0:
-                logging.warning(f"❌ 张量稳定化失败: {e}")
+                logging.warning(f" 张量稳定化失败: {e}")
             return None
 
     def _check_tensor_stability(self, tensor, tensor_name):
@@ -559,11 +559,11 @@ class CorrectEbbinghausDistillation:
 
             # 检查NaN和Inf
             if torch.isnan(tensor).any():
-                logging.warning(f"⚠️ {tensor_name}包含NaN")
+                logging.warning(f" {tensor_name}包含NaN")
                 return False
 
             if torch.isinf(tensor).any():
-                logging.warning(f"⚠️ {tensor_name}包含Inf")
+                logging.warning(f" {tensor_name}包含Inf")
                 return False
 
             return True
@@ -636,11 +636,11 @@ class CorrectEbbinghausDistillation:
             if self.step_count % 500 == 0:
                 memory_report = self.memory_model.get_memory_report()
                 logging.info(
-                    f"💾 正确记忆更新: 批次大小={batch_size}, 样本数={memory_report['total_samples']}, 学习进度={memory_report['learning_progress']:.1%}")
+                    f" 正确记忆更新: 批次大小={batch_size}, 样本数={memory_report['total_samples']}, 学习进度={memory_report['learning_progress']:.1%}")
 
         except Exception as e:
             if self.step_count % 500 == 0:
-                logging.warning(f"❌ 正确记忆更新失败: {e}")
+                logging.warning(f" 正确记忆更新失败: {e}")
 
     def _compute_correct_learning_gain(self, distill_loss, original_loss):
         """计算正确学习增益"""
@@ -665,13 +665,13 @@ class CorrectEbbinghausDistillation:
 
             if self.step_count % 1000 == 0:
                 logging.info(
-                    f"🎯 正确学习增益: 蒸馏损失={distill_loss:.4f}, 增益={final_gain:.4f}, 稳定模式={self.stable_mode}")
+                    f" 正确学习增益: 蒸馏损失={distill_loss:.4f}, 增益={final_gain:.4f}, 稳定模式={self.stable_mode}")
 
             return final_gain
 
         except Exception as e:
             if self.step_count % 500 == 0:
-                logging.warning(f"❌ 正确学习增益计算失败: {e}")
+                logging.warning(f" 正确学习增益计算失败: {e}")
             return 0.05
 
     def _get_correct_sample_id(self, batch, index):
@@ -716,30 +716,21 @@ class CorrectEbbinghausDistillation:
         )
 
         if review_samples:
-            logging.info(f"✅ 安排了{len(review_samples)}个样本的复习")
+            logging.info(f" 安排了{len(review_samples)}个样本的复习")
         else:
-            logging.info("🔄 暂无需要复习的样本")
+            logging.info(" 暂无需要复习的样本")
 
     def _epochly_correct_report(self):
         """正确周期报告"""
         memory_report = self.memory_model.get_memory_report()
         scheduling_report = self.review_scheduler.get_scheduling_report()
 
-        logging.info("📈 === 正确周期报告 ===")
-        logging.info(f"📅 训练周期: {self.epoch_count}")
-        logging.info(f"🔄 总训练步数: {self.step_count}")
-        logging.info(f"✅ 蒸馏应用次数: {self.distill_applied}")
-        logging.info(f"🎯 学习进度: {memory_report['learning_progress']:.1%}")
-        logging.info(f"📚 跟踪样本: {memory_report['total_samples']}个")
-        logging.info(f"💾 平均记忆强度: {memory_report['avg_intensity']:.3f}")
-        logging.info(f"📈 记忆趋势: {memory_report['trend']}")
-        logging.info(f"📅 复习安排: {scheduling_report['scheduled_reviews']}次")
 
         # NaN状态报告
         if self.nan_detected:
-            logging.info("⚠️  NaN检测: 系统处于稳定恢复模式")
+            logging.info("  NaN检测: 系统处于稳定恢复模式")
         elif self.stable_mode:
-            logging.info("🛡️  稳定模式: 已启用，训练更加保守")
+            logging.info("稳定模式: 已启用，训练更加保守")
 
         logging.info("=" * 50)
 
@@ -749,30 +740,30 @@ class CorrectEbbinghausDistillation:
         memory_report = self.memory_model.get_memory_report()
         scheduling_report = self.review_scheduler.get_scheduling_report()
 
-        logging.info("🎉 === 正确最终报告 ===")
-        logging.info(f"⏱️  总训练时间: {training_time:.0f}秒")
-        logging.info(f"🔄 总训练步数: {self.step_count}")
-        logging.info(f"📅 总训练周期: {self.epoch_count}")
-        logging.info(f"✅ 蒸馏应用次数: {self.distill_applied}")
-        logging.info(f"🎯 最终学习进度: {memory_report['learning_progress']:.1%}")
-        logging.info(f"📚 总跟踪样本: {memory_report['total_samples']}个")
-        logging.info(f"💾 最终记忆强度: {memory_report['avg_intensity']:.3f}")
-        logging.info(f"📈 最终记忆趋势: {memory_report['trend']}")
-        logging.info(f"📅 总复习安排: {scheduling_report['total_reviews']}次")
+        logging.info(" === 正确最终报告 ===")
+        logging.info(f" 总训练时间: {training_time:.0f}秒")
+        logging.info(f" 总训练步数: {self.step_count}")
+        logging.info(f" 总训练周期: {self.epoch_count}")
+        logging.info(f" 蒸馏应用次数: {self.distill_applied}")
+        logging.info(f" 最终学习进度: {memory_report['learning_progress']:.1%}")
+        logging.info(f" 总跟踪样本: {memory_report['total_samples']}个")
+        logging.info(f" 最终记忆强度: {memory_report['avg_intensity']:.3f}")
+        logging.info(f" 最终记忆趋势: {memory_report['trend']}")
+        logging.info(f" 总复习安排: {scheduling_report['total_reviews']}次")
 
         # 系统稳定性评估
         if not self.nan_detected and memory_report['learning_progress'] > 0:
-            logging.info("✅ 正确蒸馏系统工作正常!")
+            logging.info(" 正确蒸馏系统工作正常!")
         elif self.nan_detected:
-            logging.info("⚠️  系统检测到NaN，需要进一步调试")
+            logging.info("  系统检测到NaN，需要进一步调试")
         else:
-            logging.info("🔄 系统稳定但学习进度较低")
+            logging.info(" 系统稳定但学习进度较低")
 
         logging.info("=" * 50)
 
     def train(self, epochs=100, imgsz=640, batch=16, **kwargs):
         """训练入口"""
-        logging.info("🚀 开始正确的艾宾浩斯蒸馏训练...")
+        logging.info(" 开始正确的艾宾浩斯蒸馏训练...")
 
         # 使用正确的训练配置
         correct_config = {
@@ -791,11 +782,11 @@ class CorrectEbbinghausDistillation:
 
         try:
             results = self.student.train(**correct_config)
-            logging.info("✅ 正确的艾宾浩斯蒸馏训练完成")
+            logging.info(" 正确的艾宾浩斯蒸馏训练完成")
             return results
 
         except Exception as e:
-            logging.error(f"❌ 训练失败: {e}")
+            logging.error(f" 训练失败: {e}")
             raise
 
 
@@ -817,7 +808,7 @@ class CorrectMemoryModel:
         self.total_samples = 0
         self.learned_samples = 0
 
-        logging.info("🧠✅ 正确记忆模型初始化完成")
+        logging.info(" 正确记忆模型初始化完成")
 
     def compute_sample_difficulty(self, batch, index):
         """计算样本难度"""
@@ -906,7 +897,7 @@ class CorrectReviewScheduler:
         self.memory_model = memory_model
         self.review_count = 0
 
-        logging.info("📅✅ 正确复习调度器初始化完成")
+        logging.info("📅 正确复习调度器初始化完成")
 
     def schedule_reviews(self, current_step, review_ratio=0.3):
         """安排复习"""
@@ -941,7 +932,7 @@ def main():
     logging.info(f"使用设备: {device}")
 
     print("=== 正确的艾宾浩斯蒸馏系统 ===")
-    print("🚀 开始正确版本训练...")
+    print(" 开始正确版本训练...")
 
     try:
         trainer = CorrectEbbinghausDistillation(
@@ -960,11 +951,11 @@ def main():
             amp=False
         )
 
-        logging.info("🎉 正确的艾宾浩斯蒸馏训练完成!")
+        logging.info(" 正确的艾宾浩斯蒸馏训练完成!")
         return results
 
     except Exception as e:
-        logging.error(f"❌ 正确版本失败: {e}")
+        logging.error(f" 正确版本失败: {e}")
         return None
 
 
