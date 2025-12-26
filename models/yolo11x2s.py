@@ -27,7 +27,7 @@
 #         self.data_config = data_config
 #         self.step_count = 0
 #
-#         logging.info("✅ 简化蒸馏训练器初始化完成")
+#         logging.info(" 简化蒸馏训练器初始化完成")
 #
 #     # def setup_distillation_callback(self):
 #     #     """设置蒸馏回调"""
@@ -52,8 +52,8 @@
 #     #             # 记录日志
 #     #             if self.step_count % 100 == 0:
 #     #                 new_loss = trainer.loss.item()
-#     #                 logging.info(f"🎯 步骤 {self.step_count}: 蒸馏应用成功")
-#     #                 logging.info(f"💧 损失变化: {original_loss:.4f} -> {new_loss:.4f}")
+#     #                 logging.info(f" 步骤 {self.step_count}: 蒸馏应用成功")
+#     #                 logging.info(f" 损失变化: {original_loss:.4f} -> {new_loss:.4f}")
 #     #
 #     #         except Exception as e:
 #     #             if self.step_count % 200 == 0:
@@ -86,14 +86,14 @@
 #                 original_loss = trainer.loss.item()
 #
 #                 # ---------------------------
-#                 # 🔥 计算艾宾浩斯蒸馏权重
+#                 #  计算艾宾浩斯蒸馏权重
 #                 # ---------------------------
 #                 ebbinghaus_weight = w0 * torch.exp(
 #                     torch.tensor(- self.step_count / tau, device=self.device)
 #                 )
 #
 #                 # ---------------------------
-#                 # 🔥 计算 teacher-student logits 蒸馏损失
+#                 #  计算 teacher-student logits 蒸馏损失
 #                 # ---------------------------
 #                 # teacher 前向
 #                 with torch.no_grad():
@@ -107,15 +107,15 @@
 #                 distill_loss = F.mse_loss(s_out[0], t_out[0])
 #
 #                 # ---------------------------
-#                 # 🔥 组合总损失
+#                 #  组合总损失
 #                 # ---------------------------
 #                 trainer.loss = trainer.loss + ebbinghaus_weight * distill_loss
 #
 #                 # 打印日志
 #                 if self.step_count % 100 == 0:
-#                     logging.info(f"🎯 Step {self.step_count}: Ebbinghaus Weight = {ebbinghaus_weight.item():.6f}")
-#                     logging.info(f"💧 Distill Loss = {distill_loss.item():.4f}")
-#                     logging.info(f"📉 Total Loss: {original_loss:.4f} -> {trainer.loss.item():.4f}")
+#                     logging.info(f" Step {self.step_count}: Ebbinghaus Weight = {ebbinghaus_weight.item():.6f}")
+#                     logging.info(f" Distill Loss = {distill_loss.item():.4f}")
+#                     logging.info(f"Total Loss: {original_loss:.4f} -> {trainer.loss.item():.4f}")
 #
 #             except Exception as e:
 #                 if self.step_count % 200 == 0:
@@ -130,7 +130,7 @@
 #
 #     def train(self,  ** kwargs):
 #         """训练方法"""
-#         logging.info("🚀 开始简化蒸馏训练...")
+#         logging.info(" 开始简化蒸馏训练...")
 #
 #         # 设置蒸馏回调
 #         self.setup_distillation_callback()
@@ -149,7 +149,7 @@
 #         }
 #
 #         results = self.student.train(**config)
-#         logging.info(f"✅ 简化蒸馏训练完成，总步骤: {self.step_count}")
+#         logging.info(f" 简化蒸馏训练完成，总步骤: {self.step_count}")
 #         return results
 #
 #
@@ -172,11 +172,11 @@
 #             amp=False
 #         )
 #
-#         logging.info("🎉 蒸馏训练完成!")
+#         logging.info(" 蒸馏训练完成!")
 #         return results
 #
 #     except Exception as e:
-#         logging.error(f"❌ 训练失败: {e}")
+#         logging.error(f" 训练失败: {e}")
 #         return None
 #
 #
@@ -243,7 +243,7 @@ class SimpleDistillationTrainer:
         # memory-aware weighting: memory_factor = (1 - strength) ** power
         self.memory_power = 1.0
 
-        logging.info("✅ 简化蒸馏训练器初始化完成")
+        logging.info(" 简化蒸馏训练器初始化完成")
 
     # ----------------- 辅助函数 -----------------
     def extract_sample_ids(self, batch):
@@ -441,13 +441,13 @@ class SimpleDistillationTrainer:
                 # 打印日志（偶尔）
                 if self.step_count % 100 == 0:
                     if avg_distill is not None:
-                        logging.info(f"🎯 步骤 {self.step_count}: Ebbinghaus base w={ebbinghaus_weight:.6f}, active_reviews={active_reviews}, avg_distill={avg_distill.item():.6f}")
+                        logging.info(f" 步骤 {self.step_count}: Ebbinghaus base w={ebbinghaus_weight:.6f}, active_reviews={active_reviews}, avg_distill={avg_distill.item():.6f}")
                     else:
-                        logging.info(f"🎯 步骤 {self.step_count}: 无需复习样本 (active_reviews=0). Ebbinghaus w={ebbinghaus_weight:.6f}")
+                        logging.info(f" 步骤 {self.step_count}: 无需复习样本 (active_reviews=0). Ebbinghaus w={ebbinghaus_weight:.6f}")
                     # 输出一些 sample 的 strength 快照
                     sample_snapshot = list(self.memory_store.items())[:3]
                     snap_str = ", ".join([f"{k}:{v['strength']:.3f}" for k, v in sample_snapshot])
-                    logging.info(f"🧠 memory snapshot (first 3): {snap_str}")
+                    logging.info(f"memory snapshot (first 3): {snap_str}")
 
             except Exception as e:
                 if self.step_count % 200 == 0:
@@ -462,7 +462,7 @@ class SimpleDistillationTrainer:
 
     def train(self,  ** kwargs):
         """训练方法"""
-        logging.info("🚀 开始简化蒸馏训练...")
+        logging.info(" 开始简化蒸馏训练...")
 
         # 设置蒸馏回调
         self.setup_distillation_callback()
@@ -481,7 +481,7 @@ class SimpleDistillationTrainer:
         }
 
         results = self.student.train(**config)
-        logging.info(f"✅ 简化蒸馏训练完成，总步骤: {self.step_count}")
+        logging.info(f" 简化蒸馏训练完成，总步骤: {self.step_count}")
         return results
 
 
@@ -505,11 +505,11 @@ def main():
             amp=False
         )
 
-        logging.info("🎉 蒸馏训练完成!")
+        logging.info(" 蒸馏训练完成!")
         return results
 
     except Exception as e:
-        logging.error(f"❌ 训练失败: {e}")
+        logging.error(f" 训练失败: {e}")
         return None
 
 

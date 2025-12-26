@@ -43,7 +43,7 @@ class EbbinghausDynamicDistillation:
         self.setup_models()
         self.setup_ebbinghaus_callbacks()
 
-        logging.info("🧠 艾宾浩斯动态蒸馏系统初始化完成")
+        logging.info("艾宾浩斯动态蒸馏系统初始化完成")
 
     def setup_models(self):
         """设置模型"""
@@ -58,14 +58,14 @@ class EbbinghausDynamicDistillation:
             self.student = YOLO(self.student_config)
             self.student.model.to(self.device)
 
-            logging.info("✅ 模型设置完成")
+            logging.info(" 模型设置完成")
         except Exception as e:
-            logging.error(f"❌ 模型设置失败: {e}")
+            logging.error(f" 模型设置失败: {e}")
             raise
 
     def setup_ebbinghaus_callbacks(self):
         """设置艾宾浩斯蒸馏回调"""
-        logging.info("🔧 设置艾宾浩斯蒸馏回调...")
+        logging.info("设置艾宾浩斯蒸馏回调...")
 
         # 保存原始训练方法
         self.original_train = self.student.train
@@ -75,11 +75,11 @@ class EbbinghausDynamicDistillation:
 
         # 替换训练方法
         self.student.train = ebbinghaus_train_wrapper
-        logging.info("✅ 艾宾浩斯蒸馏回调设置完成")
+        logging.info(" 艾宾浩斯蒸馏回调设置完成")
 
     def _ebbinghaus_training(self,  ** kwargs):
         """艾宾浩斯蒸馏训练"""
-        logging.info("🚀 开始艾宾浩斯动态蒸馏训练...")
+        logging.info(" 开始艾宾浩斯动态蒸馏训练...")
 
         # 设置艾宾浩斯回调
         self._setup_ebbinghaus_training_callbacks()
@@ -94,7 +94,7 @@ class EbbinghausDynamicDistillation:
 
     def _setup_ebbinghaus_training_callbacks(self):
         """设置艾宾浩斯训练回调"""
-        logging.info("🔧 设置艾宾浩斯训练回调...")
+        logging.info("设置艾宾浩斯训练回调...")
 
         if not hasattr(self.student, 'callbacks'):
             self.student.callbacks = {}
@@ -115,15 +115,15 @@ class EbbinghausDynamicDistillation:
                     if self.step_count % 100 == 0:
                         imgs = batch.get('img') if hasattr(batch, 'get') else None
                         if imgs is not None and hasattr(imgs, 'shape'):
-                            logging.info(f"✅ 步骤{self.step_count}: 获取批次数据, 形状: {imgs.shape}")
+                            logging.info(f" 步骤{self.step_count}: 获取批次数据, 形状: {imgs.shape}")
                 else:
                     if self.step_count % 100 == 0:
-                        logging.info(f"🔄 步骤{self.step_count}: 使用虚拟批次数据")
+                        logging.info(f" 步骤{self.step_count}: 使用虚拟批次数据")
                     self.current_batch = self._create_ebbinghaus_batch()
 
             except Exception as e:
                 if self.step_count % 200 == 0:
-                    logging.warning(f"❌ 步骤{self.step_count}批次开始回调失败: {e}")
+                    logging.warning(f" 步骤{self.step_count}批次开始回调失败: {e}")
 
         # 艾宾浩斯批次结束回调
         def on_train_batch_end(trainer):
@@ -132,7 +132,7 @@ class EbbinghausDynamicDistillation:
                 self._apply_ebbinghaus_distillation(trainer)
             except Exception as e:
                 if self.step_count % 200 == 0:
-                    logging.warning(f"❌ 步骤{self.step_count}艾宾浩斯蒸馏失败: {e}")
+                    logging.warning(f" 步骤{self.step_count}艾宾浩斯蒸馏失败: {e}")
 
         # 艾宾浩斯周期结束回调
         def on_train_epoch_end(trainer):
@@ -152,7 +152,7 @@ class EbbinghausDynamicDistillation:
         self.student.callbacks['on_train_batch_end'].append(on_train_batch_end)
         self.student.callbacks['on_train_epoch_end'].append(on_train_epoch_end)
 
-        logging.info("✅ 艾宾浩斯训练回调设置完成")
+        logging.info(" 艾宾浩斯训练回调设置完成")
 
     def _extract_batch_from_trainer(self, trainer):
         """从trainer提取批次数据"""
@@ -191,7 +191,7 @@ class EbbinghausDynamicDistillation:
         """应用艾宾浩斯蒸馏"""
         if not hasattr(self, 'current_batch') or self.current_batch is None:
             if self.step_count % 100 == 0:
-                logging.info(f"🔄 步骤{self.step_count}: 无批次数据，跳过蒸馏")
+                logging.info(f" 步骤{self.step_count}: 无批次数据，跳过蒸馏")
             return
 
         batch = self.current_batch
@@ -200,7 +200,7 @@ class EbbinghausDynamicDistillation:
             # 检查批次数据
             if not self._validate_batch(batch):
                 if self.step_count % 100 == 0:
-                    logging.info(f"🔄 步骤{self.step_count}: 批次数据无效，使用虚拟数据")
+                    logging.info(f" 步骤{self.step_count}: 批次数据无效，使用虚拟数据")
                 batch = self._create_ebbinghaus_batch()
                 if batch is None:
                     return
@@ -209,11 +209,11 @@ class EbbinghausDynamicDistillation:
             imgs = batch.get('img') if hasattr(batch, 'get') else None
             if imgs is None:
                 if self.step_count % 100 == 0:
-                    logging.info(f"🔄 步骤{self.step_count}: 无图像数据，使用虚拟图像")
+                    logging.info(f" 步骤{self.step_count}: 无图像数据，使用虚拟图像")
                 imgs = torch.randn(8, 3, 640, 640, device=self.device)
 
             if self.step_count % 100 == 0:
-                logging.info(f"🧠 步骤{self.step_count}: 应用艾宾浩斯蒸馏, 图像形状: {imgs.shape}")
+                logging.info(f"步骤{self.step_count}: 应用艾宾浩斯蒸馏, 图像形状: {imgs.shape}")
 
             # 记录原始损失
             original_loss = 0.0
@@ -282,19 +282,19 @@ class EbbinghausDynamicDistillation:
                 memory_report = self.memory_model.get_memory_report()
                 scheduling_report = self.review_scheduler.get_scheduling_report()
 
-                logging.info("🧠 === 艾宾浩斯蒸馏报告 ===")
-                logging.info(f"📊 训练步数: {self.step_count}")
-                logging.info(f"💧 损失变化: {original_loss:.4f} -> {new_loss:.4f}")
-                logging.info(f"🔥 蒸馏损失: {distill_loss_value:.6f}")
-                logging.info(f"🎯 学习进度: {memory_report['learning_progress']:.1%}")
-                logging.info(f"📚 跟踪样本: {memory_report['total_samples']}个")
-                logging.info(f"💾 平均记忆强度: {memory_report['avg_intensity']:.3f}")
-                logging.info(f"📅 复习安排: {scheduling_report['scheduled_reviews']}次")
-                logging.info(f"✅ 蒸馏应用次数: {self.distill_applied}")
+                logging.info("=== 艾宾浩斯蒸馏报告 ===")
+                logging.info(f"训练步数: {self.step_count}")
+                logging.info(f" 损失变化: {original_loss:.4f} -> {new_loss:.4f}")
+                logging.info(f" 蒸馏损失: {distill_loss_value:.6f}")
+                logging.info(f" 学习进度: {memory_report['learning_progress']:.1%}")
+                logging.info(f" 跟踪样本: {memory_report['total_samples']}个")
+                logging.info(f" 平均记忆强度: {memory_report['avg_intensity']:.3f}")
+                logging.info(f" 复习安排: {scheduling_report['scheduled_reviews']}次")
+                logging.info(f" 蒸馏应用次数: {self.distill_applied}")
 
         except Exception as e:
             if self.step_count % 200 == 0:
-                logging.warning(f"❌ 步骤{self.step_count}艾宾浩斯蒸馏失败: {e}")
+                logging.warning(f" 步骤{self.step_count}艾宾浩斯蒸馏失败: {e}")
 
     def _validate_batch(self, batch):
         """验证批次数据"""
@@ -337,11 +337,11 @@ class EbbinghausDynamicDistillation:
 
             if self.step_count % 200 == 0:
                 memory_report = self.memory_model.get_memory_report()
-                logging.info(f"💾 艾宾浩斯记忆更新: 批次大小={batch_size}, 样本数={memory_report['total_samples']}")
+                logging.info(f" 艾宾浩斯记忆更新: 批次大小={batch_size}, 样本数={memory_report['total_samples']}")
 
         except Exception as e:
             if self.step_count % 200 == 0:
-                logging.warning(f"❌ 艾宾浩斯记忆更新失败: {e}")
+                logging.warning(f" 艾宾浩斯记忆更新失败: {e}")
 
     def _get_sample_id(self, batch, index):
         """获取样本ID"""
@@ -385,31 +385,31 @@ class EbbinghausDynamicDistillation:
         )
 
         if review_samples:
-            logging.info(f"✅ 安排了{len(review_samples)}个样本的复习")
+            logging.info(f" 安排了{len(review_samples)}个样本的复习")
             # 在实际实现中，这里会加载复习样本进行训练
         else:
-            logging.info("🔄 暂无需要复习的样本")
+            logging.info(" 暂无需要复习的样本")
 
     def _epochly_ebbinghaus_report(self):
         """艾宾浩斯周期报告"""
         memory_report = self.memory_model.get_memory_report()
         scheduling_report = self.review_scheduler.get_scheduling_report()
 
-        logging.info("📈 === 艾宾浩斯周期报告 ===")
-        logging.info(f"📅 训练周期: {self.epoch_count}")
-        logging.info(f"🔄 总训练步数: {self.step_count}")
-        logging.info(f"✅ 蒸馏应用次数: {self.distill_applied}")
-        logging.info(f"🎯 学习进度: {memory_report['learning_progress']:.1%}")
-        logging.info(f"📚 跟踪样本: {memory_report['total_samples']}个")
-        logging.info(f"💾 平均记忆强度: {memory_report['avg_intensity']:.3f}")
-        logging.info(f"📅 复习安排: {scheduling_report['scheduled_reviews']}次")
-        logging.info(f"📊 记忆健康度: {memory_report['health_score']:.1%}")
+        logging.info(" === 艾宾浩斯周期报告 ===")
+        logging.info(f" 训练周期: {self.epoch_count}")
+        logging.info(f" 总训练步数: {self.step_count}")
+        logging.info(f" 蒸馏应用次数: {self.distill_applied}")
+        logging.info(f" 学习进度: {memory_report['learning_progress']:.1%}")
+        logging.info(f" 跟踪样本: {memory_report['total_samples']}个")
+        logging.info(f" 平均记忆强度: {memory_report['avg_intensity']:.3f}")
+        logging.info(f" 复习安排: {scheduling_report['scheduled_reviews']}次")
+        logging.info(f" 记忆健康度: {memory_report['health_score']:.1%}")
 
         # 检查系统是否工作
         if memory_report['total_samples'] > 0:
-            logging.info("✅ 艾宾浩斯蒸馏系统工作正常!")
+            logging.info(" 艾宾浩斯蒸馏系统工作正常!")
         else:
-            logging.info("🔄 艾宾浩斯系统正在初始化...")
+            logging.info(" 艾宾浩斯系统正在初始化...")
 
         logging.info("=" * 50)
 
@@ -419,28 +419,28 @@ class EbbinghausDynamicDistillation:
         memory_report = self.memory_model.get_memory_report()
         scheduling_report = self.review_scheduler.get_scheduling_report()
 
-        logging.info("🎉 === 最终艾宾浩斯训练报告 ===")
-        logging.info(f"⏱️  总训练时间: {training_time:.0f}秒")
-        logging.info(f"🔄 总训练步数: {self.step_count}")
-        logging.info(f"📅 总训练周期: {self.epoch_count}")
-        logging.info(f"✅ 蒸馏应用次数: {self.distill_applied}")
-        logging.info(f"🎯 最终学习进度: {memory_report['learning_progress']:.1%}")
-        logging.info(f"📚 总跟踪样本: {memory_report['total_samples']}个")
-        logging.info(f"💾 最终记忆强度: {memory_report['avg_intensity']:.3f}")
-        logging.info(f"📅 总复习安排: {scheduling_report['total_reviews']}次")
+        logging.info(" === 最终艾宾浩斯训练报告 ===")
+        logging.info(f"  总训练时间: {training_time:.0f}秒")
+        logging.info(f" 总训练步数: {self.step_count}")
+        logging.info(f" 总训练周期: {self.epoch_count}")
+        logging.info(f" 蒸馏应用次数: {self.distill_applied}")
+        logging.info(f" 最终学习进度: {memory_report['learning_progress']:.1%}")
+        logging.info(f" 总跟踪样本: {memory_report['total_samples']}个")
+        logging.info(f" 最终记忆强度: {memory_report['avg_intensity']:.3f}")
+        logging.info(f" 总复习安排: {scheduling_report['total_reviews']}次")
 
         if memory_report['total_samples'] > 0 and memory_report['learning_progress'] > 0:
-            logging.info("✅ 艾宾浩斯蒸馏训练成功完成!")
+            logging.info(" 艾宾浩斯蒸馏训练成功完成!")
         elif memory_report['total_samples'] > 0:
-            logging.info("🔄 艾宾浩斯系统已跟踪样本，但学习进度较低")
+            logging.info(" 艾宾浩斯系统已跟踪样本，但学习进度较低")
         else:
-            logging.info("⚠️  艾宾浩斯系统需要改进")
+            logging.info("  艾宾浩斯系统需要改进")
 
         logging.info("=" * 50)
 
     def train(self, epochs=100, imgsz=640, batch=16,  ** kwargs):
         """训练入口"""
-        logging.info("🚀 开始艾宾浩斯动态蒸馏训练...")
+        logging.info(" 开始艾宾浩斯动态蒸馏训练...")
 
         train_config = {
             'data': self.data_config,
@@ -458,11 +458,11 @@ class EbbinghausDynamicDistillation:
 
         try:
             results = self.student.train(**train_config)
-            logging.info("✅ 艾宾浩斯动态蒸馏训练完成")
+            logging.info(" 艾宾浩斯动态蒸馏训练完成")
             return results
 
         except Exception as e:
-            logging.error(f"❌ 训练失败: {e}")
+            logging.error(f" 训练失败: {e}")
             raise
 
 
@@ -485,7 +485,7 @@ class EbbinghausMemoryModel:
         self.learned_samples = 0
         self.forgetting_samples = 0
 
-        logging.info("🧠 艾宾浩斯记忆模型初始化完成")
+        logging.info("艾宾浩斯记忆模型初始化完成")
 
     def compute_sample_difficulty(self, batch, index):
         """计算样本难度系数 - 实现您提供的公式1"""
@@ -730,8 +730,7 @@ class AdaptiveReviewScheduler:
         self.review_count = 0
         self.last_review_step = 0
         self.adaptive_interval_adjustment = 1.0
-
-        logging.info("📅 自适应复习调度器初始化完成")
+        logging.info("自适应复习调度器初始化完成")
 
     def schedule_reviews(self, current_step, review_ratio=0.3):
         """自适应复习调度算法 - 算法1实现"""
@@ -791,7 +790,7 @@ class MemoryAwareDistillationLoss:
         self.forgetting_tolerance = 0.1
         self.penalty_weight = 0.1
 
-        logging.info("🎯 记忆感知蒸馏损失初始化完成")
+        logging.info(" 记忆感知蒸馏损失初始化完成")
 
     def compute(self, student_outputs, teacher_outputs, batch, current_step):
         """计算记忆感知蒸馏损失 - 公式5-10实现"""
@@ -806,7 +805,7 @@ class MemoryAwareDistillationLoss:
             return weighted_loss
 
         except Exception as e:
-            logging.warning(f"❌ 记忆感知蒸馏损失计算失败: {e}")
+            logging.warning(f" 记忆感知蒸馏损失计算失败: {e}")
             return torch.tensor(0.05, requires_grad=True)
 
     def _compute_base_distillation_loss(self, student_out, teacher_out):
@@ -853,7 +852,7 @@ def main():
     logging.info(f"使用设备: {device}")
 
     print("=== 艾宾浩斯动态蒸馏训练系统 ===")
-    print("🚀 开始完整的艾宾浩斯蒸馏训练...")
+    print(" 开始完整的艾宾浩斯蒸馏训练...")
 
     try:
         trainer = EbbinghausDynamicDistillation(
@@ -872,11 +871,11 @@ def main():
             amp=False
         )
 
-        logging.info("🎉 艾宾浩斯动态蒸馏训练完成!")
+        logging.info(" 艾宾浩斯动态蒸馏训练完成!")
         return results
 
     except Exception as e:
-        logging.error(f"❌ 艾宾浩斯蒸馏训练失败: {e}")
+        logging.error(f" 艾宾浩斯蒸馏训练失败: {e}")
         return None
 
 
