@@ -33,9 +33,19 @@ MDD-Crack-Detection/
 ├── weights/                # Pre-trained model weights
    └── MDD/
       └── weights/        # Contains the best trained MDD model
-## Citation
+```
+
+## Training (Reproduce MDD)
+To train the student model using the MDD framework:
+
+```Bash
+python teacher2student.py
+```
+
+##  Citation
 If you find this work helpful for your research, please consider citing our paper:
 
+```text
 @article{MDD_Crack_2025,
   title={Enhancing Crack Detection via Memory-Aware Dynamic Knowledge Distillation},
   author={Zhao, Liang and Jiao, Yutong and Chen, Dengfeng and Liu, Shipeng},
@@ -43,3 +53,4 @@ If you find this work helpful for your research, please consider citing our pape
   year={2025},
   note={Under Review}
 }
+```
