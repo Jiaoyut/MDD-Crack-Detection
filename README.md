@@ -33,4 +33,13 @@ MDD-Crack-Detection/
 ├── weights/                # Pre-trained model weights
    └── MDD/
       └── weights/        # Contains the best trained MDD model
+## Citation
+If you find this work helpful for your research, please consider citing our paper:
 
+@article{MDD_Crack_2025,
+  title={Enhancing Crack Detection via Memory-Aware Dynamic Knowledge Distillation},
+  author={Zhao, Liang and Jiao, Yutong and Chen, Dengfeng and Liu, Shipeng},
+  journal={The Visual Computer},
+  year={2025},
+  note={Under Review}
+}
