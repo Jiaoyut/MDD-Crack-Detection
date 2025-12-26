@@ -1,7 +1,6 @@
 # Enhancing Crack Detection via Memory-Aware Dynamic Knowledge Distillation
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXX)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![DOI](https://zenodo.org/badge/1123080674.svg)](https://doi.org/10.5281/zenodo.18059674)
 [![Framework: PyTorch](https://img.shields.io/badge/Framework-PyTorch-orange.svg)](https://pytorch.org/)
 
 > **Note:** This repository contains the official implementation of the paper **"Enhancing Crack Detection via Memory-Aware Dynamic Knowledge Distillation"**, submitted to *The Visual Computer*.
