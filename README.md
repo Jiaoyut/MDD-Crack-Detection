@@ -3,7 +3,7 @@
 [![DOI](https://zenodo.org/badge/1123080674.svg)](https://doi.org/10.5281/zenodo.18059674)
 [![Framework: PyTorch](https://img.shields.io/badge/Framework-PyTorch-orange.svg)](https://pytorch.org/)
 
-> **Note:** This repository contains the official implementation of the paper **"Enhancing Crack Detection via Memory-Aware Dynamic Knowledge Distillation"**, submitted to *The Visual Computer*.
+> **Note:** This repository contains the official implementation of the paper **"Enhancing Crack Detection via Memory-Aware Dynamic Knowledge Distillation"**, submitted to *Multimedia Systems*.
 
 ## 📖 Introduction
 
@@ -49,7 +49,7 @@ If you find this work helpful for your research, please consider citing our pape
 @article{MDD_Crack_2025,
   title={Enhancing Crack Detection via Memory-Aware Dynamic Knowledge Distillation},
   author={Zhao, Liang and Jiao, Yutong and Chen, Dengfeng and Liu, Shipeng},
-  journal={The Visual Computer},
+  journal={Multimedia Systems},
   year={2025},
   note={Under Review}
 }
